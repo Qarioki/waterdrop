@@ -210,15 +210,16 @@
             const summaryHours = document.getElementById('summaryHours');
 
             calculateButton.addEventListener('click', () => {
-                const waterdropsValue = 300 - parseInt(waterdropsInput.value);
+                let waterdropsValue = parseInt(waterdropsInput.value);
 
                 // Input validation
-                if (isNaN(waterdropsValue) || waterdropsValue === null || waterdropsValue < 0) {
-                    errorMessage.textContent = 'Error: Enter a valid positive no. thats lesser than 301.';
+                if (isNaN(waterdropsValue) || waterdropsValue === null || waterdropsValue < 0 || waterdropsValue > 300) {
+                    errorMessage.textContent = 'Error: Enter a valid positive no. thats lesser than 300';
                     waterdropsInput.focus();
                     return;
                 } else {
                     errorMessage.textContent = ''; // Clear any previous error
+                    waterdropsValue = 300 - waterdropsValue;
                 }
 
                 // Calculate seconds
