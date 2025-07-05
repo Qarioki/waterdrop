@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF="8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waterdrops</title>
+    <style>
+        body {
+            font-family: 'Ebrima', sans-serif;
+          /*  display: flex; */
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 3em;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            position: relative;                      
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+        /*    max-width: 400px; */
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .container.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .container.fade-in {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .summary-view.fade-in {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+
+
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .summary-view {
+            display: none; /* Hidden by default */
+            position: relative;                                 
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            width: 90%;
+           /* max-width: 400px; */
+            background-color: #fff;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+           
+        }
+
+        .summary-view h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .summary-view p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .summary-view p strong {
+            color: #333;
+        }
+
+        .error-message {
+            color: #d9534f;
+            margin-top: 15px;
+            font-size: 0.95em;
+            height: 20px; /* Reserve space to prevent layout shifts */
+        }
+        .back-button {
+            background-color: #6c757d; /* A neutral color for the back button */
+            margin-top: 20px; /* Space from summary text */
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container, .summary-view {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            label {
+                font-size: 1em;
+            }
+
+            input[type="number"], button {
+                font-size: 0.95em;
+                padding: 10px 15px;
+            }
+
+            .summary-view h2 {
+                font-size: 1.6em;
+            }
+
+            .summary-view p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="initialView" class="container">
+        <h1>Waterdrop Calculator</h1>
+        <div class="form-group">
+            <label for="waterdrops">Waterdrops</label>
+            <input type="number" id="waterdrops"  placeholder="Enter number of waterdrops">
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+        <button id="calculateButton">Calculate</button>
+    </div>
+
+    <div id="summaryView" class="summary-view">
+        <h2>Calculation Summary</h2>
+        <p><strong>Waterdrops:</strong> <span id="summaryWaterdrops"></span></p>
+        <p><strong>Total seconds:</strong> <span id="summarySeconds"></span></p>
+        <p><strong>Minutes:</strong> <span id="summaryMinutes"></span></p>
+        <p><strong>Hours:</strong> <span id="summaryHours"></span></p>
+        <button id="backButton" class="back-button">Back to Calculator</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const waterdropsInput = document.getElementById('waterdrops');
+            const calculateButton = document.getElementById('calculateButton');
+            const errorMessage = document.getElementById('errorMessage');
+            const initialView = document.getElementById('initialView');
+            const summaryView = document.getElementById('summaryView');
+
+            const summaryWaterdrops = document.getElementById('summaryWaterdrops');
+            const summarySeconds = document.getElementById('summarySeconds');
+            const summaryMinutes = document.getElementById('summaryMinutes');
+            const summaryHours = document.getElementById('summaryHours');
+
+            calculateButton.addEventListener('click', () => {
+                const waterdropsValue = 300 - parseInt(waterdropsInput.value);
+
+                // Input validation
+                if (isNaN(waterdropsValue) || waterdropsValue === null || waterdropsValue < 0) {
+                    errorMessage.textContent = 'Please enter a valid positive number for waterdrops.';
+                    waterdropsInput.focus();
+                    return;
+                } else {
+                    errorMessage.textContent = ''; // Clear any previous error
+                }
+
+                // Calculate seconds
+                const seconds = waterdropsValue * 35.20;
+
+                // Calculate minutes
+                let minutes = (seconds / 60);
+                minutes = parseFloat(minutes.toFixed(2)); // Round to two decimal places
+
+                let hours = 'n/a'; // Default to n/a
+
+                // Calculate hours and remaining minutes if minutes > 60
+                if (minutes > 60) {
+                    const totalMinutes = Math.floor(seconds / 60); // Get total minutes for accurate conversion
+                    const calculatedHours = Math.floor(totalMinutes / 60);
+                    const remainingMinutes = Math.abs(totalMinutes % 60); // Absolute value for remaining minutes
+                    hours = `${calculatedHours} hour(s) and ${remainingMinutes} minute(s)`;
+                }
+
+                // Populate summary view
+                summaryWaterdrops.textContent = waterdropsValue;
+                summarySeconds.textContent = seconds.toFixed(2); // Display seconds with 2 decimal places for consistency
+                summaryMinutes.textContent = minutes;
+                summaryHours.textContent = hours;
+
+                // Fade out initial view and fade in summary view
+                initialView.classList.add('fade-out');
+                setTimeout(() => {
+                    initialView.style.display = 'none';
+                    summaryView.style.display = 'block';
+                    // Allow a slight delay for display block before adding fade-in
+                    setTimeout(() => {
+                        summaryView.classList.add('fade-in');
+                    }, 50);
+                }, 500); // This duration should match the CSS transition duration
+            });
+
+            backButton.addEventListener('click', () => {
+                window.location.reload(true);// A quick way to reset the page. might be problematic later
+                
+            });
+            // Optional: Allow pressing Enter to trigger calculation
+            waterdropsInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    calculateButton.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
