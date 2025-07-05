@@ -134,7 +134,7 @@
         .error-message {
             color: #d9534f;
             margin-top: 15px;
-            font-size: 0.95em;
+            font-size: 0.8em;
             height: 20px; /* Reserve space to prevent layout shifts */
         }
         .back-button {
@@ -214,7 +214,7 @@
 
                 // Input validation
                 if (isNaN(waterdropsValue) || waterdropsValue === null || waterdropsValue < 0) {
-                    errorMessage.textContent = 'Please enter a valid positive number for waterdrops.';
+                    errorMessage.textContent = 'Please enter a valid positive number thats greater than 300.';
                     waterdropsInput.focus();
                     return;
                 } else {
