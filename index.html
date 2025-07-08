@@ -103,7 +103,7 @@
             display: none; /* Hidden by default */
             position: relative;                                 
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 9px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: left;
             width: 90%;
@@ -208,6 +208,7 @@
             const summarySeconds = document.getElementById('summarySeconds');
             const summaryMinutes = document.getElementById('summaryMinutes');
             const summaryHours = document.getElementById('summaryHours');
+            document.getElementById("waterdrops").focus();
 
             calculateButton.addEventListener('click', () => {
                 let waterdropsValue = parseInt(waterdropsInput.value);
